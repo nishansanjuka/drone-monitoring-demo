@@ -27,7 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function FarmersTable() {
   const [farmers, setFarmers] = useState<FarmerWithFields[] | undefined>([]);
   const [Load, setLoad] = useState<boolean>(true);
-  const { update } = useUpdates();
+  const { updateFarmers } = useUpdates();
 
   useEffect(() => {
     async function getData() {
@@ -36,7 +36,7 @@ export default function FarmersTable() {
       setLoad(false);
     }
     getData();
-  }, [update]);
+  }, [updateFarmers]);
 
   return (
     <Fragment>
@@ -50,7 +50,7 @@ export default function FarmersTable() {
 
           <Card
             x-chunk="dashboard-06-chunk-0"
-            className=" w-[85vw] mx-auto border-none overflow-x-hidden"
+            className=" w-[85vw] xl:w-full mx-auto border-none overflow-x-hidden"
           >
             <CardHeader>
               <Skeleton className=" w-[160px] h-8" />
@@ -136,7 +136,7 @@ export default function FarmersTable() {
               <FormContainer />
             </div>
           </div>
-          <Card x-chunk="dashboard-06-chunk-0" className=" w-[85vw] mx-auto">
+          <Card x-chunk="dashboard-06-chunk-0" className=" w-[85vw] xl:w-full mx-auto">
             <CardHeader>
               <CardTitle>All Farmers</CardTitle>
               <CardDescription>

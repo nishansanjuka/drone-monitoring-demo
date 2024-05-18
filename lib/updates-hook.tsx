@@ -2,13 +2,17 @@
 import React from "react";
 
 interface UpdatesContextType {
-  update: boolean;
-  setUpdates: (state: boolean) => void;
+  updateFarmers: boolean;
+  setUpdateFarmers: (state: boolean) => void;
+  updateDrones: boolean;
+  setUpdateDrones: (state: boolean) => void;
 }
 
 const UpdatesContext = React.createContext<UpdatesContextType>({
-  update: false,
-  setUpdates: () => {},
+  updateFarmers: false,
+  setUpdateFarmers: () => {},
+  updateDrones: false,
+  setUpdateDrones: () => {},
 });
 
 export function useUpdates() {
@@ -22,13 +26,19 @@ export function useUpdates() {
 }
 
 export function UpdatesProvider({ children }: { children: React.ReactNode }) {
-  const [update, setUpdate] = React.useState<boolean>(false);
+  const [updateFarmers, setUpdateFarmers] = React.useState<boolean>(false);
+  const [updateDrones, setUpdateDrones] = React.useState<boolean>(false);
 
-  const setUpdates = (state: boolean) => {
-    setUpdate(state);
+  const setUpdatesFarmers = (state: boolean) => {
+    setUpdateFarmers(state);
+  };
+  const setUpdatesDrones = (state: boolean) => {
+    setUpdateFarmers(state);
   };
   return (
-    <UpdatesContext.Provider value={{ update, setUpdates }}>
+    <UpdatesContext.Provider
+      value={{ updateDrones, updateFarmers, setUpdateDrones, setUpdateFarmers }}
+    >
       {children}
     </UpdatesContext.Provider>
   );

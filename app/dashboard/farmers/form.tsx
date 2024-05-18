@@ -63,7 +63,6 @@ import {
 import { cn } from "@/lib/utils";
 import { agriculturalFields } from "@/constants";
 import { CreateFarmer } from "@/lib/handle-farmer";
-import { toast } from "@/components/ui/use-toast";
 import React, { useState } from "react";
 import { useUpdates } from "@/lib/updates-hook";
 
@@ -78,7 +77,7 @@ export default function FarmerForm({
 
   const [load, setLoad] = useState<boolean>(false);
 
-  const { update, setUpdates } = useUpdates();
+  const { updateFarmers, setUpdateFarmers } = useUpdates();
 
   async function onSubmit(values: z.infer<typeof farmersFormSchema>) {
     setLoad(true);
@@ -87,7 +86,7 @@ export default function FarmerForm({
 
     if (res) {
       setOpen(false);
-      setUpdates(!update);
+      setUpdateFarmers(!updateFarmers);
     }
   }
 
