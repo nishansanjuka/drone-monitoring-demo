@@ -79,7 +79,7 @@ export default function DroneForm({
     formData.append("serial-number", values.serialNumber);
     formData.append("model", values.model);
     formData.append("availability", "true");
-    const response = await fetch("/api/drone", {
+    const response = await fetch("/api/drone/create", {
       method: "POST",
       body: formData,
     });

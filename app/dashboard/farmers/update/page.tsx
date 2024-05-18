@@ -4,35 +4,35 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const farmersFormSchema = z.object({
-  firstName: z
-    .string({
-      required_error: "first name required!",
-    })
-    .min(2, {
-      message: "first name must be at least 2 characters.",
-    }),
-  lastName: z
-    .string({
-      required_error: "last name required!",
-    })
-    .min(2, {
-      message: "last name must be at least 2 characters.",
-    }),
-  landName: z.string({
-    required_error: "land name required!",
-  }),
-  landType: z.string({
-    required_error: "land name required!",
-  }),
-  acres: z
-    .string({
-      required_error: "size of the land required!",
-    })
-    .refine((val) => !isNaN(Number(val)), {
-      message: "Please enter a valid number.",
-    }),
-});
+// export const farmersFormSchema = z.object({
+//   firstName: z
+//     .string({
+//       required_error: "first name required!",
+//     })
+//     .min(2, {
+//       message: "first name must be at least 2 characters.",
+//     }),
+//   lastName: z
+//     .string({
+//       required_error: "last name required!",
+//     })
+//     .min(2, {
+//       message: "last name must be at least 2 characters.",
+//     }),
+//   landName: z.string({
+//     required_error: "land name required!",
+//   }),
+//   landType: z.string({
+//     required_error: "land name required!",
+//   }),
+//   acres: z
+//     .string({
+//       required_error: "size of the land required!",
+//     })
+//     .refine((val) => !isNaN(Number(val)), {
+//       message: "Please enter a valid number.",
+//     }),
+// });
 
 import { Button } from "@/components/ui/button";
 import {
@@ -66,6 +66,7 @@ import React, { useEffect, useState } from "react";
 import { useUpdates } from "@/lib/updates-hook";
 import { Farmer } from "@prisma/client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { farmersFormSchema } from "../form";
 
 export default function InterceptedUpdatePage() {
   const [load, setLoad] = useState<boolean>(false);

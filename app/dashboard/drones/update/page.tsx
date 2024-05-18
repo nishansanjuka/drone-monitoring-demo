@@ -4,27 +4,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const dronesFormSchema = z.object({
-  serialNumber: z
-    .string({
-      required_error: "serial number required!",
-    })
-    .min(2, {
-      message: "serial number must be at least 2 characters.",
-    }),
-  model: z
-    .string({
-      required_error: "model name required!",
-    })
-    .min(2, {
-      message: "model name must be at least 2 characters.",
-    }),
-  availability: z
-    .boolean({
-      required_error: "availability required!",
-    })
-    .optional(),
-});
+// export const dronesFormSchema = z.object({
+//   model: z
+//     .string({
+//       required_error: "model name required!",
+//     })
+//     .min(2, {
+//       message: "model name must be at least 2 characters.",
+//     }),
+//   serialNumber: z
+//     .string({
+//       required_error: "serial number required!",
+//     })
+//     .min(2, {
+//       message: "serial number must be at least 2 characters.",
+//     }),
+//   availability: z
+//     .boolean({
+//       required_error: "availability required!",
+//     })
+//     .optional(),
+// });
 
 import { Button } from "@/components/ui/button";
 import {
@@ -46,12 +46,9 @@ import { Loader } from "lucide-react";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AvailabilityData } from "@prisma/client";
+import { dronesFormSchema } from "../form";
 
-export default function DroneUpdateForm({
-  setOpen,
-}: {
-  setOpen: (value: React.SetStateAction<boolean>) => void;
-}) {
+export default function DroneUpdateForm() {
   const searchParams = useSearchParams();
 
   const form = useForm<z.infer<typeof dronesFormSchema>>({
