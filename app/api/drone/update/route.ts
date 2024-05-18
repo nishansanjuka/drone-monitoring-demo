@@ -33,6 +33,19 @@ export async function POST(request: Request) {
       // await writeFile(Buffer.from(await img.arrayBuffer()), fileName);
 
       if (id) {
+        const assigendFarmer = await prisma.farmer.findFirst({
+          where: { droneId: parseInt(id) },
+        });
+
+        if (assigendFarmer && availability === "true") {
+          await prisma.farmer.update({
+            where: { id: assigendFarmer.id },
+            data: {
+              droneId: null,
+            },
+          });
+        }
+
         await prisma.drone.update({
           where: {
             id: parseInt(id),

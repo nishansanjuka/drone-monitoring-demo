@@ -29,15 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import {
-  Ellipsis,
-  File,
-  FilePenLine,
-  ListFilter,
-  MoreHorizontal,
-  PlusCircle,
-  Trash,
-} from "lucide-react";
+import { Ellipsis, FilePenLine, Trash } from "lucide-react";
 import { TabsContent } from "@/components/ui/tabs";
 import { Fragment, useEffect, useState } from "react";
 // import { GetDrones } from "@/lib/handle-drone";
@@ -45,12 +37,14 @@ import { Drone } from "@prisma/client";
 import { GetDrones, deleteDrone } from "@/lib/handle-drone";
 import { useUpdates } from "@/lib/updates-hook";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function PageTabs() {
   const [droneData, setDroneData] = useState<Drone[] | undefined>([]);
   const [Load, setLoad] = useState<boolean>(true);
 
   const { updateDrones, setUpdateDrones } = useUpdates();
+  const router = useRouter();
 
   useEffect(() => {
     async function getData() {
@@ -130,6 +124,11 @@ export default function PageTabs() {
                             </TableCell>
                             <TableCell className=" font-bold text-muted-foreground">
                               <Button
+                                onClick={() =>
+                                  router.push(
+                                    `/dashboard/drones/assign?id=${drone.id}&model=${drone.model}&serial=${drone.serialNumber}&availability=${drone.availability}`
+                                  )
+                                }
                                 disabled={drone.availability === "BUSY"}
                                 variant={"default"}
                                 className=" text-xs rounded-full disabled:bg-slate-800 bg-green-500 hover:bg-green-400"
@@ -263,8 +262,14 @@ export default function PageTabs() {
                             </TableCell>
                             <TableCell className=" font-bold text-muted-foreground">
                               <Button
+                                onClick={() =>
+                                  router.push(
+                                    `/dashboard/drones/assign?id=${drone.id}&model=${drone.model}&serial=${drone.serialNumber}&availability=${drone.availability}`
+                                  )
+                                }
+                                disabled={drone.availability === "BUSY"}
                                 variant={"default"}
-                                className=" text-xs rounded-full bg-green-500 hover:bg-green-400"
+                                className=" text-xs rounded-full disabled:bg-slate-800 bg-green-500 hover:bg-green-400"
                               >
                                 ASSIGN
                               </Button>

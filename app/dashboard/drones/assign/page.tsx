@@ -1,23 +1,7 @@
 "use client";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-
-import { useUpdates } from "@/lib/updates-hook";
-import React, { Fragment, useEffect, useState } from "react";
-import {
-  FarmerWithFields,
-  GetFarmers,
-  deleteFarmer,
-} from "@/lib/handle-farmer";
-
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -25,33 +9,45 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import FormContainer from "./container";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Delete, Ellipsis, FilePenLine, Trash } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { AssignFarmer } from "@/lib/handle-assign";
+import {
+  FarmerWithFields,
+  GetFarmers,
+  deleteFarmer,
+} from "@/lib/handle-farmer";
+import { useUpdates } from "@/lib/updates-hook";
+import { Ellipsis, FilePenLine, Trash } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { Fragment, useEffect, useState } from "react";
 
-type Checked = DropdownMenuCheckboxItemProps["checked"];
-
-export default function FarmersTable() {
+export default function AssignPage() {
+  const searchParams = useSearchParams();
   const [farmers, setFarmers] = useState<FarmerWithFields[] | undefined>([]);
   const [Load, setLoad] = useState<boolean>(true);
-  const { updateFarmers, setUpdateFarmers } = useUpdates();
 
-  const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true);
-  const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false);
-  const [showPanel, setShowPanel] = React.useState<Checked>(false);
+  const { setUpdateFarmers, updateFarmers } = useUpdates();
+
+  const router = useRouter();
 
   useEffect(() => {
     async function getData() {
@@ -60,118 +56,27 @@ export default function FarmersTable() {
       setLoad(false);
     }
     getData();
-  }, [updateFarmers]);
+  }, []);
 
   return (
     <Fragment>
       {Load ? (
-        <Fragment>
-          <div className="flex items-center">
-            <div className="ml-auto flex items-center gap-2">
-              <Skeleton className=" w-[120px] h-7" />
-            </div>
-          </div>
-
-          <Card
-            x-chunk="dashboard-06-chunk-0"
-            className=" w-[85vw] xl:w-full mx-auto border-none overflow-x-hidden"
-          >
-            <CardHeader>
-              <Skeleton className=" w-[160px] h-8" />
-              <Skeleton className=" w-[450px] h-5" />
-            </CardHeader>
-            <CardContent>
-              <div>
-                <div className=" space-y-2">
-                  <div className=" flex space-x-2 border-none">
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <div>
-                      <span className="sr-only">Actions</span>
-                    </div>
-                  </div>
-                  <div className=" flex space-x-2 border-none">
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <div>
-                      <span className="sr-only">Actions</span>
-                    </div>
-                  </div>
-                  <div className=" flex space-x-2 border-none">
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <div>
-                      <span className="sr-only">Actions</span>
-                    </div>
-                  </div>
-                  <div className=" flex space-x-2 border-none">
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <div>
-                      <span className="sr-only">Actions</span>
-                    </div>
-                  </div>
-                  <div className=" flex space-x-2 border-none">
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <div>
-                      <span className="sr-only">Actions</span>
-                    </div>
-                  </div>
-                  <div className=" flex space-x-2 border-none">
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <Skeleton className=" w-[45vw] h-8" />
-                    <div>
-                      <span className="sr-only">Actions</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            {/* <CardFooter>
-        <div className="text-xs text-muted-foreground">
-          Showing <strong>1-10</strong> of <strong>32</strong> products
-        </div>
-      </CardFooter> */}
-          </Card>
-        </Fragment>
+        <h1 className=" text-lg font-bold">Please wait...</h1>
       ) : (
-        <Fragment>
-          <div className="flex items-center">
-            <div className="ml-auto flex items-center gap-2">
-              <FormContainer />
-            </div>
-          </div>
-          <Card
-            x-chunk="dashboard-06-chunk-0"
-            className=" w-[85vw] xl:w-full mx-auto"
-          >
+        <div className=" w-full flex h-[80vh] sm:h-[90vh] items-center justify-center">
+          <Card className="w-full h-full max-w-[90vw]">
             <CardHeader>
-              <CardTitle>All Farmers</CardTitle>
+              <CardTitle>Assign Farmer</CardTitle>
               <CardDescription>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo,
-                quisquam.
+                <h1 className=" text-lg underline mb-2">Drone details</h1>
+                <h1>Drone id : {searchParams.get("id")}</h1>
+                <h1>Drone model : {searchParams.get("model")}</h1>
+                <h1>Drone serial number : {searchParams.get("serial")}</h1>
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {/* <ScrollArea className=" h-[50vh] sm:h-[70vh] ">
+          </ScrollArea> */}
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -182,7 +87,7 @@ export default function FarmersTable() {
                     <TableHead>Size in Acres</TableHead>
                     <TableHead>Registered</TableHead>
                     <TableHead>Updated</TableHead>
-                    <TableHead>Assigned?</TableHead>
+                    <TableHead>Assign</TableHead>
                     <TableHead>Action</TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>
@@ -243,17 +148,21 @@ export default function FarmersTable() {
                               second: "2-digit",
                             }).format(new Date(farmer.updatedAt))}
                           </TableCell>
-                          <TableCell className="">
-                            <Badge
-                              variant={
-                                farmer.droneId === null
-                                  ? "outline"
-                                  : "destructive"
-                              }
-                              className=" w-fit flex items-center justify-center space-x-1"
+                          <TableCell className=" font-bold text-muted-foreground">
+                            <Button
+                              disabled={farmer.droneId === null ? false : true}
+                              onClick={async () => {
+                                await AssignFarmer({
+                                  farmer: farmer.id,
+                                  drone: searchParams.get("id"),
+                                });
+                                router.back();
+                              }}
+                              variant={"default"}
+                              className=" text-xs rounded-full disabled:bg-slate-800 bg-green-500 hover:bg-green-400"
                             >
-                              {farmer.droneId === null ? "Assigned" : "Available"}
-                            </Badge>
+                              ASSIGN
+                            </Button>
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -292,13 +201,8 @@ export default function FarmersTable() {
                 </TableBody>
               </Table>
             </CardContent>
-            {/* <CardFooter>
-          <div className="text-xs text-muted-foreground">
-            Showing <strong>1-10</strong> of <strong>32</strong> products
-          </div>
-        </CardFooter> */}
           </Card>
-        </Fragment>
+        </div>
       )}
     </Fragment>
   );

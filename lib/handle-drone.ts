@@ -17,7 +17,22 @@ export async function GetDrones(): Promise<Drone[] | undefined> {
 
 export async function deleteDrone(id: number): Promise<boolean> {
   try {
-    await prisma.drone.delete({ where: { id } });
+    const drone = await prisma.drone.findUnique({ where: { id } });
+    if (drone) {
+      const assignedFarmer = await prisma.farmer.findFirst({
+        where: { droneId: drone.id },
+      });
+
+      if (assignedFarmer) {
+        await prisma.farmer.update({
+          where: { id: assignedFarmer.id },
+          data: {
+            droneId: null,
+          },
+        });
+      }
+      await prisma.drone.delete({ where: { id } });
+    }
     return true;
   } catch (error) {
     console.log(error);

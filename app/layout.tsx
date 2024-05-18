@@ -29,17 +29,18 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <body className={`flex min-h-screen flex-col ${inter.className}`}>
-          <ThemeProvider
-            enableSystem
+          {/* <ThemeProvider
+            // enableSystem
             attribute="class"
             defaultTheme="light"
             disableTransitionOnChange
           >
-            <Dashboard>
-              <UpdatesProvider>{children}</UpdatesProvider>
-            </Dashboard>
-            <Footer />
-          </ThemeProvider>
+            
+          </ThemeProvider> */}
+          <Dashboard>
+            <UpdatesProvider>{children}</UpdatesProvider>
+          </Dashboard>
+          <Footer />
         </body>
       </html>
     </ClerkProvider>
