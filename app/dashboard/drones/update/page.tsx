@@ -38,21 +38,32 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useUpdates } from "@/lib/updates-hook";
 import { Switch } from "@/components/ui/switch";
 import { Loader } from "lucide-react";
 // import { CreateDrone } from "@/lib/handle-drone";
 import { CldUploadWidget } from "next-cloudinary";
+import { useRouter, useSearchParams } from "next/navigation";
+import { AvailabilityData } from "@prisma/client";
 
-export default function DroneForm({
+export default function DroneUpdateForm({
   setOpen,
 }: {
   setOpen: (value: React.SetStateAction<boolean>) => void;
 }) {
+  const searchParams = useSearchParams();
+
   const form = useForm<z.infer<typeof dronesFormSchema>>({
     resolver: zodResolver(dronesFormSchema),
+    defaultValues: {
+      model: searchParams.get("model")?.toString(),
+      serialNumber: searchParams.get("serial")?.toString(),
+      availability: searchParams.get("availability") === "AVAILABLE",
+    },
   });
+
+  const router = useRouter();
 
   const [FileData, setFileData] = useState<File | null>(null);
 
@@ -78,20 +89,26 @@ export default function DroneForm({
     // }
     formData.append("serial-number", values.serialNumber);
     formData.append("model", values.model);
-    formData.append("availability", "true");
-    const response = await fetch("/api/drone", {
-      method: "POST",
-      body: formData,
-    });
+    formData.append(
+      "availability",
+      values.availability === true ? "true" : "false"
+    );
+    const response = await fetch(
+      `/api/drone/update?id=${searchParams.get("id")}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
     setLoad(false);
     if (response.ok) {
       setUpdateDrones(!updateDrones);
-      setOpen(false);
+      router.push("/dashboard/drones");
     }
   }
 
   return (
-    <ScrollArea className=" max-h-[65vh] sm:max-h-[75vh] sm:h-fit">
+    <div className="w-[90vw] sm:w-[500px] bg-transparent border border-border p-5 rounded-md mx-auto ">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -146,7 +163,10 @@ export default function DroneForm({
                   </FormDescription>
                 </div>
                 <FormControl>
-                  <Switch checked={true} onCheckedChange={field.onChange} />
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -158,7 +178,7 @@ export default function DroneForm({
             className=" w-full"
           >
             {!load ? (
-              "Register"
+              "Update"
             ) : (
               <div className=" flex items-center space-x-2 animate-pulse">
                 <Loader width={15} height={15} className=" animate-spin" />
@@ -168,6 +188,6 @@ export default function DroneForm({
           </Button>
         </form>
       </Form>
-    </ScrollArea>
+    </div>
   );
 }

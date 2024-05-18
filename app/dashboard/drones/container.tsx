@@ -20,8 +20,8 @@ export default function FormContainer() {
             </span>
           </Button>
         }
-        title={"Add New Farmer"}
-        description={"create new farmer bla bla bla"}
+        title={"Add New Drone"}
+        description={"create new drone bla bla bla"}
         content={<DroneForm setOpen={setOpen} />}
         open={open}
         setOpen={setOpen}

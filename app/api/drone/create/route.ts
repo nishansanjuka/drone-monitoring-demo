@@ -21,10 +21,10 @@ export async function POST(request: Request) {
       await fs.mkdir(path.join(process.cwd() + "/public", "/media"));
     }
 
-    if (img && serialNumber && model && availability) {
-      const fileName = `DRONE-${generateRandomString(15)}.${
-        img.name.split(".")[img.name.split(".").length - 1]
-      }`;
+    if (serialNumber && model && availability) {
+      // const fileName = `DRONE-${generateRandomString(15)}.${
+      //   img.name.split(".")[img.name.split(".").length - 1]
+      // }`;
 
       // await writeFile(Buffer.from(await img.arrayBuffer()), fileName);
 
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
           serialNumber,
           model,
           availability: availability === "true" ? "AVAILABLE" : "BUSY",
-          image: fileName,
+          // image: fileName,
         },
       });
       return Response.json({ done: "OK" }, { status: 201 });

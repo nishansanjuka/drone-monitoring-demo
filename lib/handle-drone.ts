@@ -14,3 +14,15 @@ export async function GetDrones(): Promise<Drone[] | undefined> {
     await prisma.$disconnect();
   }
 }
+
+export async function deleteDrone(id: number): Promise<boolean> {
+  try {
+    await prisma.drone.delete({ where: { id } });
+    return true;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+    return false;
+  }
+}

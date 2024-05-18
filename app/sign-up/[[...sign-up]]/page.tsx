@@ -2,8 +2,8 @@ import { SignUp } from '@clerk/nextjs'
 
 export default function Page() {
   return (
-    <section className='py-24'>
-      <div className='container flex items-center justify-center'>
+    <section className='sm:py-24'>
+      <div className='sm:container sm:flex sm:items-center sm:justify-center'>
         <SignUp />
       </div>
     </section>
