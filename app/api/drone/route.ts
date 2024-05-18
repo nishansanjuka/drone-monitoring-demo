@@ -26,7 +26,7 @@ export async function POST(request: Request) {
         img.name.split(".")[img.name.split(".").length - 1]
       }`;
 
-      await writeFile(Buffer.from(await img.arrayBuffer()), fileName);
+      // await writeFile(Buffer.from(await img.arrayBuffer()), fileName);
 
       await prisma.drone.create({
         data: {
