@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AvailabilityData {
+  AVAILABLE
+  BUSY
+}
+
+model Farmer {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  drone     Drone?   @relation(fields: [droneId], references: [id])
+  droneId   Int?     @unique
+  field     Field?   @relation(fields: [fieldId], references: [id])
+  fieldId   Int?     @unique
+}
+
+model Field {
+  id        Int      @id @default(autoincrement())
+  name      String
+  type      String
+  acres     Int
+  farmer    Farmer?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Drone {
+  id           Int              @id @default(autoincrement())
+  serialNumber String
+  model        String
+  availability AvailabilityData
+  Farmer       Farmer?
+  image        String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
