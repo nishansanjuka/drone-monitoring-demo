@@ -1,7 +1,7 @@
-import path from "path";
-import fs from "fs/promises";
 import { currentUser } from "@clerk/nextjs/server";
 import { PrismaClient } from "@prisma/client";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { storage } from "@/lib/firebase.config";
 
 const prisma = new PrismaClient();
 
@@ -10,6 +10,8 @@ export async function POST(request: Request) {
 
   if (session) {
     const body = await request.formData();
+    var downloadUrl: string | null = null;
+    var imgPath: string | null = null;
 
     const img = body.get("drone-img") as File;
     const serialNumber = body.get("serial-number") as string;
@@ -19,20 +21,26 @@ export async function POST(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
-    try {
-      await fs.readdir(path.join(process.cwd() + "/public", "/media"));
-    } catch (error) {
-      await fs.mkdir(path.join(process.cwd() + "/public", "/media"));
+    if (img) {
+      const storageRef = ref(
+        storage,
+        `drones/${generateRandomString(15)}-${img.name}`
+      );
+
+      const metadata = {
+        contentType: img.type,
+      };
+
+      const snapshot = await uploadBytesResumable(storageRef, img, metadata);
+      downloadUrl = await getDownloadURL(snapshot.ref);
+      imgPath = snapshot.ref.fullPath;
     }
 
     if (serialNumber && model && availability) {
-      // const fileName = `DRONE-${generateRandomString(15)}.${
-      //   img.name.split(".")[img.name.split(".").length - 1]
-      // }`;
-
-      // await writeFile(Buffer.from(await img.arrayBuffer()), fileName);
-
       if (id) {
+        const existDrone = await prisma.drone.findUnique({
+          where: { id: parseInt(id) },
+        });
         const assigendFarmer = await prisma.farmer.findFirst({
           where: { droneId: parseInt(id) },
         });
@@ -46,17 +54,20 @@ export async function POST(request: Request) {
           });
         }
 
-        await prisma.drone.update({
-          where: {
-            id: parseInt(id),
-          },
-          data: {
-            serialNumber,
-            model,
-            availability: availability === "true" ? "AVAILABLE" : "BUSY",
-            // image: fileName,
-          },
-        });
+        if (existDrone) {
+          await prisma.drone.update({
+            where: {
+              id: parseInt(id),
+            },
+            data: {
+              serialNumber,
+              model,
+              availability: availability === "true" ? "AVAILABLE" : "BUSY",
+              image: downloadUrl ? downloadUrl : existDrone.image,
+              imgPath: imgPath ? imgPath : existDrone.imgPath,
+            },
+          });
+        }
         return Response.json({ done: "OK" }, { status: 200 });
       } else {
         return new Response("Bad Request", { status: 400 });
@@ -69,11 +80,11 @@ export async function POST(request: Request) {
   }
 }
 
-async function writeFile(fileContent: Buffer, fileName: string): Promise<void> {
-  const filePath = path.join(process.cwd() + "/public", "/media", fileName);
+// async function writeFile(fileContent: Buffer, fileName: string): Promise<void> {
+//   const filePath = path.join(process.cwd() + "/public", "/media", fileName);
 
-  await fs.writeFile(filePath, fileContent);
-}
+//   await fs.writeFile(filePath, fileContent);
+// }
 
 function generateRandomString(length: number) {
   const characters =

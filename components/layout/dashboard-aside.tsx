@@ -34,7 +34,8 @@ export default function DashboardAside() {
                   href={route.href}
                   className={cn(
                     "flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8",
-                    pathName === route.href
+                    pathName === route.href ||
+                      pathName.includes(route.href.split("/")[2])
                       ? "text-accent-foreground bg-accent"
                       : "text-muted-foreground"
                   )}
@@ -58,7 +59,7 @@ export default function DashboardAside() {
                 href="#"
                 className={cn(
                   "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
-                  pathName.endsWith("farmers")
+                  pathName.endsWith("settings")
                     ? "text-accent-foreground bg-accent"
                     : "text-muted-foreground"
                 )}

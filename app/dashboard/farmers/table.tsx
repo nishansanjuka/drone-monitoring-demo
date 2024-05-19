@@ -214,8 +214,8 @@ export default function FarmersTable() {
                           </TableCell>
                           <TableCell className="">
                             <Badge
-                              variant={"destructive"}
-                              className=" w-fit flex items-center justify-center space-x-1"
+                              variant={"default"}
+                              className=" w-fit bg-green-500 hover:bg-green-400 flex items-center justify-center space-x-1"
                             >
                               <p>{`${Intl.NumberFormat(undefined, {
                                 minimumIntegerDigits: 2,
@@ -252,7 +252,7 @@ export default function FarmersTable() {
                               }
                               className=" w-fit flex items-center justify-center space-x-1"
                             >
-                              {farmer.droneId === null ? "Assigned" : "Available"}
+                              {farmer.droneId !== null ? "Assigned" : "Available"}
                             </Badge>
                           </TableCell>
                           <TableCell>

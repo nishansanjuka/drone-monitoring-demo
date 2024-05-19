@@ -44,7 +44,8 @@ export default function DashboadHeader() {
                 href={route.href}
                 className={cn(
                   "flex items-center gap-4 px-2.5",
-                  pathName === route.href
+                  pathName === route.href ||
+                    pathName.includes(route.href.split("/")[2])
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 )}
@@ -79,14 +80,19 @@ export default function DashboadHeader() {
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     {index === pathName.split("/").length - 1 ? (
-                      <Link
-                        href={"#"}
-                        className=" capitalize text-foreground font-semibold cursor-default"
-                      >
+                      <p className=" capitalize text-foreground font-semibold cursor-default">
                         {route ? route : "Drone Monitoring System"}
-                      </Link>
+                      </p>
                     ) : (
-                      <Link href={"#"} className=" capitalize cursor-default">
+                      <Link
+                        href={`/${pathName
+                          .split("/")
+                          .map((r, i) => i <= index && r)}`
+                          .replaceAll(",", "/")
+                          .replace("/", "")
+                          .replaceAll("false", "")}
+                        className=" capitalize cursor-default"
+                      >
                         {route}
                       </Link>
                     )}

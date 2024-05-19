@@ -42,8 +42,6 @@ import React, { ChangeEvent, useState } from "react";
 import { useUpdates } from "@/lib/updates-hook";
 import { Switch } from "@/components/ui/switch";
 import { Loader } from "lucide-react";
-// import { CreateDrone } from "@/lib/handle-drone";
-import { CldUploadWidget } from "next-cloudinary";
 
 export default function DroneForm({
   setOpen,
@@ -57,12 +55,16 @@ export default function DroneForm({
   const [FileData, setFileData] = useState<File | null>(null);
 
   const [load, setLoad] = useState<boolean>(false);
+  const [imgElementData, setImgElementData] = useState<boolean>(true);
 
   const { updateDrones, setUpdateDrones } = useUpdates();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
+    if (event.target.files && event.target.files[0].size / 1024 > 500) {
+      setImgElementData(true);
       setFileData(event.target.files[0]);
+    } else {
+      setImgElementData(false);
     }
   };
 
@@ -70,23 +72,23 @@ export default function DroneForm({
     setLoad(true);
     const formData = new FormData();
 
-    // if (FileData) {
-    //   // formData.append("drone-img", FileData);
-    //   formData.append("serial-number", values.serialNumber);
-    //   formData.append("model", values.model);
-    //   formData.append("availability", "true");
-    // }
-    formData.append("serial-number", values.serialNumber);
-    formData.append("model", values.model);
-    formData.append("availability", "true");
-    const response = await fetch("/api/drone/create", {
-      method: "POST",
-      body: formData,
-    });
-    setLoad(false);
-    if (response.ok) {
-      setUpdateDrones(!updateDrones);
-      setOpen(false);
+    if (FileData) {
+      formData.append("drone-img", FileData);
+      formData.append("serial-number", values.serialNumber);
+      formData.append("model", values.model);
+      formData.append("availability", "true");
+
+      const response = await fetch("/api/drone/create", {
+        method: "POST",
+        body: formData,
+      });
+      setLoad(false);
+      if (response.ok) {
+        setUpdateDrones(!updateDrones);
+        setOpen(false);
+      }
+    } else {
+      setImgElementData(true);
     }
   }
 
@@ -127,6 +129,11 @@ export default function DroneForm({
             )}
           />
           <Input type="file" onChange={handleFileChange} />
+          {!imgElementData && (
+            <p className=" text-destructive text-sm relative bottom-3">
+              image is requiured! and minimum size must greater than 500kb
+            </p>
+          )}
           {/* <div className=" relative">
             <CldUploadWidget uploadPreset="l1rsxvfy">
               {({ open }) => {

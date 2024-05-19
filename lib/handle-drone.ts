@@ -1,6 +1,8 @@
 "use server";
 
 import { Drone, PrismaClient } from "@prisma/client";
+import { deleteObject, ref } from "firebase/storage";
+import { storage } from "./firebase.config";
 
 const prisma = new PrismaClient();
 
@@ -30,6 +32,11 @@ export async function deleteDrone(id: number): Promise<boolean> {
             droneId: null,
           },
         });
+      }
+
+      if (drone.image && drone.imgPath) {
+        const desertRef = ref(storage, drone.imgPath);
+        await deleteObject(desertRef);
       }
       await prisma.drone.delete({ where: { id } });
     }

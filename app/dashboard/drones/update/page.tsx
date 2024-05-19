@@ -47,6 +47,8 @@ import { CldUploadWidget } from "next-cloudinary";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AvailabilityData } from "@prisma/client";
 import { dronesFormSchema } from "../form";
+import Image from "next/image";
+import { fromUrlSafeBase64 } from "@/lib/handle-base-64";
 
 export default function DroneUpdateForm() {
   const searchParams = useSearchParams();
@@ -67,29 +69,46 @@ export default function DroneUpdateForm() {
   const [load, setLoad] = useState<boolean>(false);
 
   const { updateDrones, setUpdateDrones } = useUpdates();
+  const [imgElementData, setImgElementData] = useState<boolean>(true);
+  const [imageSrc, setImageSrc] = useState<string>("");
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
+    if (event.target.files && event.target.files[0].size / 1024 > 500) {
+      setImgElementData(true);
       setFileData(event.target.files[0]);
+    } else {
+      setImgElementData(false);
     }
   };
+
+  useEffect(() => {
+    if (FileData) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageSrc(reader.result as string);
+      };
+      reader.readAsDataURL(FileData);
+    } else {
+      const base64Img = fromUrlSafeBase64(searchParams.get("img") || "");
+      setImageSrc(`data:image/jpeg;base64,${base64Img}`);
+    }
+  }, [FileData, searchParams]);
 
   async function onSubmit(values: z.infer<typeof dronesFormSchema>) {
     setLoad(true);
     const formData = new FormData();
 
-    // if (FileData) {
-    //   // formData.append("drone-img", FileData);
-    //   formData.append("serial-number", values.serialNumber);
-    //   formData.append("model", values.model);
-    //   formData.append("availability", "true");
-    // }
+    if (FileData) {
+      formData.append("drone-img", FileData);
+    }
     formData.append("serial-number", values.serialNumber);
     formData.append("model", values.model);
     formData.append(
       "availability",
+
       values.availability === true ? "true" : "false"
     );
+
     const response = await fetch(
       `/api/drone/update?id=${searchParams.get("id")}`,
       {
@@ -140,7 +159,22 @@ export default function DroneUpdateForm() {
               </FormItem>
             )}
           />
+
+          <Image
+            alt={"update-img"}
+            className="aspect-square rounded-md object-cover w-64 xl:w-36 bg-muted"
+            height="500"
+            src={
+              FileData ? imageSrc : fromUrlSafeBase64(searchParams.get("img"))
+            }
+            width="500"
+          />
           <Input type="file" onChange={handleFileChange} />
+          {!imgElementData && (
+            <p className=" text-destructive text-sm relative bottom-3">
+              image is requiured! and minimum size must greater than 500kb
+            </p>
+          )}
           {/* <div className=" relative">
             <CldUploadWidget uploadPreset="l1rsxvfy">
               {({ open }) => {

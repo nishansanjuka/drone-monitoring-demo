@@ -29,6 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { AssignFarmer } from "@/lib/handle-assign";
+import { fromUrlSafeBase64 } from "@/lib/handle-base-64";
 import {
   FarmerWithFields,
   GetFarmers,
@@ -36,6 +37,7 @@ import {
 } from "@/lib/handle-farmer";
 import { useUpdates } from "@/lib/updates-hook";
 import { Ellipsis, FilePenLine, Trash } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
@@ -63,12 +65,19 @@ export default function AssignPage() {
       {Load ? (
         <h1 className=" text-lg font-bold">Please wait...</h1>
       ) : (
-        <div className=" w-full flex h-[80vh] sm:h-[90vh] items-center justify-center">
+        <div className=" w-full flex sm:h-[90vh] items-center justify-center">
           <Card className="w-full h-full max-w-[90vw]">
             <CardHeader>
               <CardTitle>Assign Farmer</CardTitle>
               <CardDescription>
-                <h1 className=" text-lg underline mb-2">Drone details</h1>
+                <Image
+                  alt={"assign-img"}
+                  className="aspect-square rounded-md mt-3 object-cover w-64 xl:w-36 bg-muted"
+                  height="500"
+                  src={fromUrlSafeBase64(searchParams.get("img"))}
+                  width="500"
+                />
+                <h1 className=" text-lg underline my-2">Drone details</h1>
                 <h1>Drone id : {searchParams.get("id")}</h1>
                 <h1>Drone model : {searchParams.get("model")}</h1>
                 <h1>Drone serial number : {searchParams.get("serial")}</h1>

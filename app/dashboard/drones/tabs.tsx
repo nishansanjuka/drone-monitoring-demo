@@ -38,6 +38,7 @@ import { GetDrones, deleteDrone } from "@/lib/handle-drone";
 import { useUpdates } from "@/lib/updates-hook";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toUrlSafeBase64 } from "@/lib/handle-base-64";
 
 export default function PageTabs() {
   const [droneData, setDroneData] = useState<Drone[] | undefined>([]);
@@ -99,10 +100,14 @@ export default function PageTabs() {
                             <TableCell className="">
                               <Image
                                 alt={drone.serialNumber}
-                                className="aspect-square rounded-md object-cover"
-                                height="64"
-                                src={`/media/${drone.image}`}
-                                width="64"
+                                className="aspect-square rounded-md object-cover w-64 xl:w-36 bg-muted"
+                                height="500"
+                                src={
+                                  drone.image
+                                    ? drone.image
+                                    : "/public/vercel.svg"
+                                }
+                                width="500"
                               />
                             </TableCell>
                             <TableCell className="font-medium">
@@ -126,7 +131,13 @@ export default function PageTabs() {
                               <Button
                                 onClick={() =>
                                   router.push(
-                                    `/dashboard/drones/assign?id=${drone.id}&model=${drone.model}&serial=${drone.serialNumber}&availability=${drone.availability}`
+                                    `/dashboard/drones/assign?id=${
+                                      drone.id
+                                    }&model=${drone.model}&serial=${
+                                      drone.serialNumber
+                                    }&availability=${
+                                      drone.availability
+                                    }&img=${toUrlSafeBase64(drone.image)}`
                                   )
                                 }
                                 disabled={drone.availability === "BUSY"}
@@ -168,7 +179,13 @@ export default function PageTabs() {
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem className="text-foreground hover:text-foreground/70 cursor-pointer">
                                     <Link
-                                      href={`/dashboard/drones/update?id=${drone.id}&model=${drone.model}&serial=${drone.serialNumber}&availability=${drone.availability}`}
+                                      href={`/dashboard/drones/update?id=${
+                                        drone.id
+                                      }&model=${drone.model}&serial=${
+                                        drone.serialNumber
+                                      }&availability=${
+                                        drone.availability
+                                      }&img=${toUrlSafeBase64(drone.image)}`}
                                       className=" flex items-center"
                                     >
                                       <FilePenLine className="mr-2 h-4 w-4" />
@@ -237,10 +254,14 @@ export default function PageTabs() {
                             <TableCell className="">
                               <Image
                                 alt={drone.serialNumber}
-                                className="aspect-square rounded-md object-cover"
-                                height="64"
-                                src={`/media/${drone.image}`}
-                                width="64"
+                                className="aspect-square rounded-md object-cover w-64 xl:w-36 bg-muted"
+                                height="500"
+                                src={
+                                  drone.image
+                                    ? drone.image
+                                    : "/public/vercel.svg"
+                                }
+                                width="500"
                               />
                             </TableCell>
                             <TableCell className="font-medium">
@@ -264,7 +285,13 @@ export default function PageTabs() {
                               <Button
                                 onClick={() =>
                                   router.push(
-                                    `/dashboard/drones/assign?id=${drone.id}&model=${drone.model}&serial=${drone.serialNumber}&availability=${drone.availability}`
+                                    `/dashboard/drones/assign?id=${
+                                      drone.id
+                                    }&model=${drone.model}&serial=${
+                                      drone.serialNumber
+                                    }&availability=${
+                                      drone.availability
+                                    }&img=${toUrlSafeBase64(drone.image)}`
                                   )
                                 }
                                 disabled={drone.availability === "BUSY"}
@@ -306,7 +333,13 @@ export default function PageTabs() {
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem className="text-foreground hover:text-foreground/70 cursor-pointer">
                                     <Link
-                                      href={`/dashboard/drones/update?id=${drone.id}&model=${drone.model}&serial=${drone.serialNumber}&availability=${drone.availability}`}
+                                      href={`/dashboard/drones/update?id=${
+                                        drone.id
+                                      }&model=${drone.model}&serial=${
+                                        drone.serialNumber
+                                      }&availability=${
+                                        drone.availability
+                                      }&img=${toUrlSafeBase64(drone.image)}`}
                                       className=" flex items-center"
                                     >
                                       <FilePenLine className="mr-2 h-4 w-4" />
@@ -363,10 +396,14 @@ export default function PageTabs() {
                             <TableCell className="">
                               <Image
                                 alt={drone.serialNumber}
-                                className="aspect-square rounded-md object-cover"
-                                height="64"
-                                src={`/media/${drone.image}`}
-                                width="64"
+                                className="aspect-square rounded-md object-cover w-64 xl:w-36 bg-muted"
+                                height="500"
+                                src={
+                                  drone.image
+                                    ? drone.image
+                                    : "/public/vercel.svg"
+                                }
+                                width="500"
                               />
                             </TableCell>
                             <TableCell className="font-medium">
@@ -418,7 +455,13 @@ export default function PageTabs() {
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem className="text-foreground hover:text-foreground/70 cursor-pointer">
                                     <Link
-                                      href={`/dashboard/drones/update?id=${drone.id}&model=${drone.model}&serial=${drone.serialNumber}&availability=${drone.availability}`}
+                                      href={`/dashboard/drones/update?id=${
+                                        drone.id
+                                      }&model=${drone.model}&serial=${
+                                        drone.serialNumber
+                                      }&availability=${
+                                        drone.availability
+                                      }&img=${toUrlSafeBase64(drone.image)}`}
                                       className=" flex items-center"
                                     >
                                       <FilePenLine className="mr-2 h-4 w-4" />

@@ -1,11 +1,9 @@
-import path from "path";
-import fs from "fs/promises";
 import { currentUser } from "@clerk/nextjs/server";
 import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
+import { storage } from "@/lib/firebase.config";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 export async function POST(request: Request) {
+  const prisma = new PrismaClient();
   const session = await currentUser();
 
   if (session) {
@@ -15,27 +13,30 @@ export async function POST(request: Request) {
     const serialNumber = body.get("serial-number") as string;
     const model = body.get("model") as string;
     const availability = body.get("availability") as string;
-    try {
-      await fs.readdir(path.join(process.cwd() + "/public", "/media"));
-    } catch (error) {
-      await fs.mkdir(path.join(process.cwd() + "/public", "/media"));
-    }
 
-    if (serialNumber && model && availability) {
-      // const fileName = `DRONE-${generateRandomString(15)}.${
-      //   img.name.split(".")[img.name.split(".").length - 1]
-      // }`;
+    if (img && serialNumber && model && availability) {
+      const storageRef = ref(
+        storage,
+        `drones/${generateRandomString(15)}-${img.name}`
+      );
 
-      // await writeFile(Buffer.from(await img.arrayBuffer()), fileName);
+      const metadata = {
+        contentType: img.type,
+      };
+
+      const snapshot = await uploadBytesResumable(storageRef, img, metadata);
+      const downloadUrl = await getDownloadURL(snapshot.ref);
 
       await prisma.drone.create({
         data: {
           serialNumber,
           model,
           availability: availability === "true" ? "AVAILABLE" : "BUSY",
-          // image: fileName,
+          image: downloadUrl,
+          imgPath: snapshot.ref.fullPath,
         },
       });
+
       return Response.json({ done: "OK" }, { status: 201 });
     } else {
       return new Response("Bad Request", { status: 400 });
@@ -45,11 +46,11 @@ export async function POST(request: Request) {
   }
 }
 
-async function writeFile(fileContent: Buffer, fileName: string): Promise<void> {
-  const filePath = path.join(process.cwd() + "/public", "/media", fileName);
+// async function writeFile(fileContent: Buffer, fileName: string): Promise<void> {
+//   const filePath = path.join(process.cwd() + "/public", "/media", fileName);
 
-  await fs.writeFile(filePath, fileContent);
-}
+//   await fs.writeFile(filePath, fileContent);
+// }
 
 function generateRandomString(length: number) {
   const characters =

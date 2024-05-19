@@ -20,7 +20,7 @@ model Farmer {
   updatedAt DateTime @updatedAt
   drone     Drone?   @relation(fields: [droneId], references: [id])
   droneId   Int?     @unique
-  field     Field?   @relation(fields: [fieldId], references: [id])
+  field     Field?   @relation(fields: [fieldId], references: [id], onDelete: Cascade)
   fieldId   Int?     @unique
 }
 
@@ -41,6 +41,7 @@ model Drone {
   availability AvailabilityData
   Farmer       Farmer?
   image        String?
+  imgPath      String?
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 }
