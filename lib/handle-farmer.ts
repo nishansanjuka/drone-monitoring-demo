@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 
 import { farmersFormSchema } from "@/app/dashboard/farmers/form";
 import { z } from "zod";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function UpdateFarmer({
   firstName,
@@ -16,31 +17,37 @@ export async function UpdateFarmer({
   id,
 }: z.infer<typeof farmersFormSchema> & { id: string }): Promise<boolean> {
   try {
-    const farmer = await prisma.farmer.findUnique({ where: { id } });
+    const session = await currentUser();
 
-    if (farmer && farmer.fieldId) {
-      await prisma.farmer.update({
-        where: { id },
-        data: {
-          firstName,
-          lastName,
-        },
-      });
+    if (session) {
+      const farmer = await prisma.farmer.findUnique({ where: { id } });
 
-      await prisma.field.update({
-        where: {
-          id: farmer.fieldId,
-        },
-        data: {
-          name: landName,
-          type: landType,
-          acres: parseInt(acres),
-        },
-      });
+      if (farmer && farmer.fieldId) {
+        await prisma.farmer.update({
+          where: { id },
+          data: {
+            firstName,
+            lastName,
+          },
+        });
 
-      return true;
+        await prisma.field.update({
+          where: {
+            id: farmer.fieldId,
+          },
+          data: {
+            name: landName,
+            type: landType,
+            acres: parseInt(acres),
+          },
+        });
+
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      throw new Error("Unauthorized!");
     }
   } catch (error) {
     console.log(error);
@@ -58,23 +65,28 @@ export async function CreateFarmer({
   acres,
 }: z.infer<typeof farmersFormSchema>): Promise<boolean> {
   try {
-    const field = await prisma.field.create({
-      data: {
-        name: landName,
-        type: landType,
-        acres: parseInt(acres),
-      },
-    });
+    const session = await currentUser();
+    if (session) {
+      const field = await prisma.field.create({
+        data: {
+          name: landName,
+          type: landType,
+          acres: parseInt(acres),
+        },
+      });
 
-    await prisma.farmer.create({
-      data: {
-        fieldId: field.id,
-        firstName,
-        lastName,
-      },
-    });
+      await prisma.farmer.create({
+        data: {
+          fieldId: field.id,
+          firstName,
+          lastName,
+        },
+      });
 
-    return true;
+      return true;
+    } else {
+      throw new Error("Unauthorized!");
+    }
   } catch (error) {
     console.log(error);
     return false;
@@ -111,10 +123,33 @@ export async function GetFarmer(id: string): Promise<Farmer | null> {
   }
 }
 
+export async function GetFarmerByAssignedDrone(
+  id: number
+): Promise<FarmerWithFields | undefined> {
+  try {
+    const farmer = await prisma.farmer.findFirst({
+      where: { droneId: id },
+      include: { field: true },
+    });
+    if (farmer) {
+      return farmer as any;
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function deleteFarmer(id: string): Promise<boolean> {
   try {
-    await prisma.farmer.delete({ where: { id } });
-    return true;
+    const session = await currentUser();
+    if (session) {
+      await prisma.farmer.delete({ where: { id } });
+      return true;
+    } else {
+      throw new Error("Unauthorized!");
+    }
   } catch (error) {
     console.log(error);
   } finally {

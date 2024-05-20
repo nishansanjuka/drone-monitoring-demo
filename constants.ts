@@ -26,6 +26,11 @@ export const routes: Routes[] = [
     href: "/dashboard/drones",
     icon: "Origami",
   },
+  {
+    name: "Monitor",
+    href: "/monitors",
+    icon: "ScreenShare",
+  },
 ];
 
 export const agriculturalFields: Lands[] = [
