@@ -131,7 +131,7 @@ export default function PageTabs() {
                               <Button
                                 onClick={() =>
                                   router.push(
-                                    `/dashboard/drones/assign?id=${
+                                    `/dashboard/assign-drone?id=${
                                       drone.id
                                     }&model=${drone.model}&serial=${
                                       drone.serialNumber
@@ -179,7 +179,7 @@ export default function PageTabs() {
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem className="text-foreground hover:text-foreground/70 cursor-pointer">
                                     <Link
-                                      href={`/dashboard/drones/update?id=${
+                                      href={`/dashboard/update-drone?id=${
                                         drone.id
                                       }&model=${drone.model}&serial=${
                                         drone.serialNumber
@@ -285,7 +285,7 @@ export default function PageTabs() {
                               <Button
                                 onClick={() =>
                                   router.push(
-                                    `/dashboard/drones/assign?id=${
+                                    `/dashboard/assign-drone?id=${
                                       drone.id
                                     }&model=${drone.model}&serial=${
                                       drone.serialNumber

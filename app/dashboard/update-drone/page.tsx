@@ -46,7 +46,7 @@ import { Loader } from "lucide-react";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AvailabilityData } from "@prisma/client";
-import { dronesFormSchema } from "../form";
+import { dronesFormSchema } from "../drones/form";
 import Image from "next/image";
 import { fromUrlSafeBase64 } from "@/lib/handle-base-64";
 

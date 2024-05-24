@@ -66,7 +66,7 @@ import React, { useEffect, useState } from "react";
 import { useUpdates } from "@/lib/updates-hook";
 import { Farmer } from "@prisma/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { farmersFormSchema } from "../form";
+import { farmersFormSchema } from "../farmers/form";
 
 export default function InterceptedUpdatePage() {
   const [load, setLoad] = useState<boolean>(false);
