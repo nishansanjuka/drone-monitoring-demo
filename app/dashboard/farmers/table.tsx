@@ -267,7 +267,7 @@ export default function FarmersTable() {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem className="text-foreground hover:text-foreground/70 cursor-pointer">
                                   <Link
-                                    href={`/dashboard/farmers/update?id=${farmer.id}&fname=${farmer.firstName}&lname=${farmer.lastName}&land=${farmer.field.name}&type=${farmer.field.type}&size=${farmer.field.acres}`}
+                                    href={`/dashboard/update-farmer?id=${farmer.id}&fname=${farmer.firstName}&lname=${farmer.lastName}&land=${farmer.field.name}&type=${farmer.field.type}&size=${farmer.field.acres}`}
                                     className=" flex items-center"
                                   >
                                     <FilePenLine className="mr-2 h-4 w-4" />
