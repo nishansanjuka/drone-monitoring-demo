@@ -1,7 +1,14 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { PrismaClient } from "@prisma/client";
 import { storage } from "@/lib/firebase.config";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  StorageReference,
+  UploadMetadata,
+  UploadTaskSnapshot,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 export async function POST(request: Request) {
   const prisma = new PrismaClient();
   const session = await currentUser();
@@ -14,28 +21,38 @@ export async function POST(request: Request) {
     const model = body.get("model") as string;
     const availability = body.get("availability") as string;
 
-    if (img && serialNumber && model && availability) {
-      const storageRef = ref(
-        storage,
-        `drones/${generateRandomString(15)}-${img.name}`
-      );
+    if (serialNumber && model && availability) {
+      if (img) {
+        const storageRef = ref(
+          storage,
+          `drones/${generateRandomString(15)}-${img.name}`
+        );
 
-      const metadata = {
-        contentType: img.type,
-      };
+        const metadata = {
+          contentType: img.type,
+        };
 
-      const snapshot = await uploadBytesResumable(storageRef, img, metadata);
-      const downloadUrl = await getDownloadURL(snapshot.ref);
+        const snapshot = await uploadBytesResumable(storageRef, img, metadata);
+        const downloadUrl = await getDownloadURL(snapshot.ref);
 
-      await prisma.drone.create({
-        data: {
-          serialNumber,
-          model,
-          availability: availability === "true" ? "AVAILABLE" : "BUSY",
-          image: downloadUrl,
-          imgPath: snapshot.ref.fullPath,
-        },
-      });
+        await prisma.drone.create({
+          data: {
+            serialNumber,
+            model,
+            availability: availability === "true" ? "AVAILABLE" : "BUSY",
+            image: downloadUrl ? downloadUrl : null,
+            imgPath: snapshot.ref.fullPath,
+          },
+        });
+      } else {
+        await prisma.drone.create({
+          data: {
+            serialNumber,
+            model,
+            availability: availability === "true" ? "AVAILABLE" : "BUSY",
+          },
+        });
+      }
 
       return Response.json({ done: "OK" }, { status: 201 });
     } else {

@@ -20,7 +20,7 @@ export const dronesFormSchema = z.object({
       message: "model name must be at least 2 characters.",
     }),
   availability: z
-    .boolean({
+    .enum(["AVAILABLE", "BUSY", "CRASHED"], {
       required_error: "availability required!",
     })
     .optional(),
@@ -42,6 +42,15 @@ import React, { ChangeEvent, useState } from "react";
 import { useUpdates } from "@/lib/updates-hook";
 import { Switch } from "@/components/ui/switch";
 import { Loader } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { AvailabilityData } from "@prisma/client";
+import { cn } from "@/lib/utils";
 
 export default function DroneForm({
   setOpen,
@@ -50,6 +59,9 @@ export default function DroneForm({
 }) {
   const form = useForm<z.infer<typeof dronesFormSchema>>({
     resolver: zodResolver(dronesFormSchema),
+    defaultValues: {
+      availability: "AVAILABLE",
+    },
   });
 
   const [FileData, setFileData] = useState<File | null>(null);
@@ -74,21 +86,21 @@ export default function DroneForm({
 
     if (FileData) {
       formData.append("drone-img", FileData);
-      formData.append("serial-number", values.serialNumber);
-      formData.append("model", values.model);
-      formData.append("availability", "true");
+    }
 
-      const response = await fetch("/api/drone/create", {
-        method: "POST",
-        body: formData,
-      });
-      setLoad(false);
-      if (response.ok) {
-        setUpdateDrones(!updateDrones);
-        setOpen(false);
-      }
-    } else {
-      setImgElementData(true);
+    formData.append("serial-number", values.serialNumber);
+    formData.append("model", values.model);
+    formData.append("availability", "true");
+
+    const response = await fetch("/api/drone/create", {
+      method: "POST",
+      body: formData,
+    });
+    
+    setLoad(false);
+    if (response.ok) {
+      setUpdateDrones(!updateDrones);
+      setOpen(false);
     }
   }
 
@@ -141,7 +153,7 @@ export default function DroneForm({
               }}
             </CldUploadWidget>
           </div> */}
-          <FormField
+          {/* <FormField
             control={form.control}
             name="availability"
             render={({ field }) => (
@@ -155,6 +167,33 @@ export default function DroneForm({
                 <FormControl>
                   <Switch checked={true} onCheckedChange={field.onChange} />
                 </FormControl>
+              </FormItem>
+            )}
+          /> */}
+          <FormField
+            control={form.control}
+            name="availability"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.keys(AvailabilityData).map((value) => (
+                      <SelectItem className={cn(value === "BUSY" && "hidden")} key={`available-${value}`} value={value}>
+                        {value}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />

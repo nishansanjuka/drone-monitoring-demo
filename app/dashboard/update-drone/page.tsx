@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import noDrone from "@/public/assets/no-drone.jpg";
 // export const dronesFormSchema = z.object({
 //   model: z
 //     .string({
@@ -49,6 +49,14 @@ import { AvailabilityData } from "@prisma/client";
 import { dronesFormSchema } from "../drones/form";
 import Image from "next/image";
 import { fromUrlSafeBase64 } from "@/lib/handle-base-64";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 export default function DroneUpdateForm() {
   const searchParams = useSearchParams();
@@ -58,7 +66,7 @@ export default function DroneUpdateForm() {
     defaultValues: {
       model: searchParams.get("model")?.toString(),
       serialNumber: searchParams.get("serial")?.toString(),
-      availability: searchParams.get("availability") === "AVAILABLE",
+      availability: searchParams.get("availability") as AvailabilityData,
     },
   });
 
@@ -103,11 +111,7 @@ export default function DroneUpdateForm() {
     }
     formData.append("serial-number", values.serialNumber);
     formData.append("model", values.model);
-    formData.append(
-      "availability",
-
-      values.availability === true ? "true" : "false"
-    );
+    formData.append("availability", values.availability as AvailabilityData);
 
     const response = await fetch(
       `/api/drone/update?id=${searchParams.get("id")}`,
@@ -165,7 +169,9 @@ export default function DroneUpdateForm() {
             className="aspect-square rounded-md object-cover w-64 xl:w-36 bg-muted"
             height="500"
             src={
-              FileData ? imageSrc : fromUrlSafeBase64(searchParams.get("img"))
+              FileData
+                ? imageSrc
+                : fromUrlSafeBase64(searchParams.get("img")) || noDrone
             }
             width="500"
           />
@@ -186,20 +192,37 @@ export default function DroneUpdateForm() {
             control={form.control}
             name="availability"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-base">Availability</FormLabel>
-                  <FormDescription>
-                    This drone is must be available when register
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-              </FormItem>
+              <FormField
+                control={form.control}
+                name="availability"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a verified email to display" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.keys(AvailabilityData).map((value) => (
+                          <SelectItem
+                            className={cn(value === "BUSY" && "hidden")}
+                            key={`available-${value}`}
+                            value={value}
+                          >
+                            {value}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
           />
           <Button

@@ -145,6 +145,16 @@ export async function deleteFarmer(id: string): Promise<boolean> {
   try {
     const session = await currentUser();
     if (session) {
+      const farmer = await prisma.farmer.findUnique({ where: { id } });
+
+      if (farmer && farmer.droneId !== null) {
+        await prisma.drone.update({
+          where: { id: farmer.droneId },
+          data: {
+            availability: "AVAILABLE",
+          },
+        });
+      }
       await prisma.farmer.delete({ where: { id } });
       return true;
     } else {

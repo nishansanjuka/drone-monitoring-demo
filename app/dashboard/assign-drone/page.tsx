@@ -41,6 +41,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
+import noDrone from "@/public/assets/no-drone.jpg";
 
 export default function AssignPage() {
   const searchParams = useSearchParams();
@@ -65,7 +66,7 @@ export default function AssignPage() {
       {Load ? (
         <h1 className=" text-lg font-bold">Please wait...</h1>
       ) : (
-        <div className=" w-full flex sm:h-[90vh] items-center justify-center">
+        <div className=" w-full flex items-center justify-center">
           <Card className="w-full h-full max-w-[90vw]">
             <CardHeader>
               <CardTitle>Assign Farmer</CardTitle>
@@ -74,7 +75,7 @@ export default function AssignPage() {
                   alt={"assign-img"}
                   className="aspect-square rounded-md mt-3 object-cover w-64 xl:w-36 bg-muted"
                   height="500"
-                  src={fromUrlSafeBase64(searchParams.get("img"))}
+                  src={fromUrlSafeBase64(searchParams.get("img")) || noDrone}
                   width="500"
                 />
                 <h1 className=" text-lg underline my-2">Drone details</h1>
