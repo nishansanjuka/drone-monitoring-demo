@@ -1,3 +1,4 @@
+import { AvailabilityData } from "@prisma/client";
 import { icons } from "lucide-react";
 
 interface Routes {
@@ -75,3 +76,8 @@ export const agriculturalFields: Lands[] = [
     value: "olive",
   },
 ];
+
+
+// export const droneAvailabilityData : AvailabilityData[] = [
+//   ''
+// ]

@@ -15,7 +15,7 @@ export function toUrlSafeBase64(str: string | null) {
 
 export function fromUrlSafeBase64(base64: string | null) {
   // Replace URL-safe characters with Base64 characters
-  if (base64) {
+  if (base64 && base64.length > 4) {
     base64 = base64.replace(/-/g, "+").replace(/_/g, "/");
 
     // Add padding characters if necessary
@@ -38,6 +38,6 @@ export function fromUrlSafeBase64(base64: string | null) {
 
     return decodedString;
   } else {
-    return "/null";
+    return null;
   }
 }

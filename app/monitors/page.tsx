@@ -42,6 +42,8 @@ import { Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
+import noDrone from "@/public/assets/no-drone.jpg";
+import { cn } from "@/lib/utils";
 
 export default function MonitorsPage() {
   const [droneData, setDroneData] = useState<Drone[] | undefined>([]);
@@ -208,11 +210,7 @@ export default function MonitorsPage() {
                                   alt={drone.serialNumber}
                                   className="aspect-square rounded-md object-cover w-64 xl:w-36 bg-muted"
                                   height="500"
-                                  src={
-                                    drone.image
-                                      ? drone.image
-                                      : "/public/vercel.svg"
-                                  }
+                                  src={drone.image ? drone.image : noDrone}
                                   width="500"
                                 />
                               </TableCell>
@@ -224,6 +222,10 @@ export default function MonitorsPage() {
                               </TableCell>
                               <TableCell className="">
                                 <Badge
+                                  className={cn(
+                                    drone.availability === "CRASHED" &&
+                                      "bg-orange-500"
+                                  )}
                                   variant={
                                     drone.availability === "AVAILABLE"
                                       ? "outline"
@@ -391,7 +393,7 @@ const DDrone = ({ id }: { id: number | null }) => {
                     alt={drone.serialNumber}
                     className="aspect-square rounded-md object-cover w-64 xl:w-36 bg-muted"
                     height="500"
-                    src={drone.image ? drone.image : "/public/vercel.svg"}
+                    src={drone.image ? drone.image : noDrone}
                     width="500"
                   />
                   <div className=" flex flex-col space-y-1">

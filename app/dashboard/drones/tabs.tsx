@@ -39,6 +39,8 @@ import { useUpdates } from "@/lib/updates-hook";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toUrlSafeBase64 } from "@/lib/handle-base-64";
+import noDrone from "@/public/assets/no-drone.jpg";
+import { cn } from "@/lib/utils";
 
 export default function PageTabs() {
   const [droneData, setDroneData] = useState<Drone[] | undefined>([]);
@@ -102,11 +104,7 @@ export default function PageTabs() {
                                 alt={drone.serialNumber}
                                 className="aspect-square rounded-md object-cover w-64 xl:w-36 bg-muted"
                                 height="500"
-                                src={
-                                  drone.image
-                                    ? drone.image
-                                    : "/public/vercel.svg"
-                                }
+                                src={drone.image ? drone.image : noDrone}
                                 width="500"
                               />
                             </TableCell>
@@ -118,9 +116,15 @@ export default function PageTabs() {
                             </TableCell>
                             <TableCell className="">
                               <Badge
+                                className={cn(
+                                  drone.availability === "CRASHED" &&
+                                    "bg-orange-500"
+                                )}
                                 variant={
                                   drone.availability === "AVAILABLE"
                                     ? "outline"
+                                    : drone.availability === "CRASHED"
+                                    ? "default"
                                     : "destructive"
                                 }
                               >
@@ -135,12 +139,17 @@ export default function PageTabs() {
                                       drone.id
                                     }&model=${drone.model}&serial=${
                                       drone.serialNumber
-                                    }&availability=${
-                                      drone.availability
-                                    }&img=${toUrlSafeBase64(drone.image)}`
+                                    }&availability=${drone.availability}&img=${
+                                      drone.image
+                                        ? toUrlSafeBase64(drone.image)
+                                        : null
+                                    }`
                                   )
                                 }
-                                disabled={drone.availability === "BUSY"}
+                                disabled={
+                                  drone.availability === "BUSY" ||
+                                  drone.availability === "CRASHED"
+                                }
                                 variant={"default"}
                                 className=" text-xs rounded-full disabled:bg-slate-800 bg-green-500 hover:bg-green-400"
                               >
@@ -185,7 +194,11 @@ export default function PageTabs() {
                                         drone.serialNumber
                                       }&availability=${
                                         drone.availability
-                                      }&img=${toUrlSafeBase64(drone.image)}`}
+                                      }&img=${
+                                        drone.image
+                                          ? toUrlSafeBase64(drone.image)
+                                          : null
+                                      }`}
                                       className=" flex items-center"
                                     >
                                       <FilePenLine className="mr-2 h-4 w-4" />
@@ -256,11 +269,7 @@ export default function PageTabs() {
                                 alt={drone.serialNumber}
                                 className="aspect-square rounded-md object-cover w-64 xl:w-36 bg-muted"
                                 height="500"
-                                src={
-                                  drone.image
-                                    ? drone.image
-                                    : "/public/vercel.svg"
-                                }
+                                src={drone.image ? drone.image : noDrone}
                                 width="500"
                               />
                             </TableCell>
@@ -289,12 +298,17 @@ export default function PageTabs() {
                                       drone.id
                                     }&model=${drone.model}&serial=${
                                       drone.serialNumber
-                                    }&availability=${
-                                      drone.availability
-                                    }&img=${toUrlSafeBase64(drone.image)}`
+                                    }&availability=${drone.availability}&img=${
+                                      drone.image
+                                        ? toUrlSafeBase64(drone.image)
+                                        : null
+                                    }`
                                   )
                                 }
-                                disabled={drone.availability === "BUSY"}
+                                disabled={
+                                  drone.availability === "BUSY" ||
+                                  drone.availability === "CRASHED"
+                                }
                                 variant={"default"}
                                 className=" text-xs rounded-full disabled:bg-slate-800 bg-green-500 hover:bg-green-400"
                               >
@@ -333,13 +347,17 @@ export default function PageTabs() {
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem className="text-foreground hover:text-foreground/70 cursor-pointer">
                                     <Link
-                                      href={`/dashboard/drones/update?id=${
+                                      href={`/dashboard/update-drone?id=${
                                         drone.id
                                       }&model=${drone.model}&serial=${
                                         drone.serialNumber
                                       }&availability=${
                                         drone.availability
-                                      }&img=${toUrlSafeBase64(drone.image)}`}
+                                      }&img=${
+                                        drone.image
+                                          ? toUrlSafeBase64(drone.image)
+                                          : null
+                                      }`}
                                       className=" flex items-center"
                                     >
                                       <FilePenLine className="mr-2 h-4 w-4" />
@@ -398,11 +416,7 @@ export default function PageTabs() {
                                 alt={drone.serialNumber}
                                 className="aspect-square rounded-md object-cover w-64 xl:w-36 bg-muted"
                                 height="500"
-                                src={
-                                  drone.image
-                                    ? drone.image
-                                    : "/public/vercel.svg"
-                                }
+                                src={drone.image ? drone.image : noDrone}
                                 width="500"
                               />
                             </TableCell>
@@ -455,13 +469,17 @@ export default function PageTabs() {
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem className="text-foreground hover:text-foreground/70 cursor-pointer">
                                     <Link
-                                      href={`/dashboard/drones/update?id=${
+                                      href={`/dashboard/update-drone?id=${
                                         drone.id
                                       }&model=${drone.model}&serial=${
                                         drone.serialNumber
                                       }&availability=${
                                         drone.availability
-                                      }&img=${toUrlSafeBase64(drone.image)}`}
+                                      }&img=${
+                                        drone.image
+                                          ? toUrlSafeBase64(drone.image)
+                                          : null
+                                      }`}
                                       className=" flex items-center"
                                     >
                                       <FilePenLine className="mr-2 h-4 w-4" />

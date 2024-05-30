@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { PrismaClient } from "@prisma/client";
+import { AvailabilityData, PrismaClient } from "@prisma/client";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "@/lib/firebase.config";
 
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const img = body.get("drone-img") as File;
     const serialNumber = body.get("serial-number") as string;
     const model = body.get("model") as string;
-    const availability = body.get("availability") as string;
+    const availability = body.get("availability") as AvailabilityData;
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
@@ -45,7 +45,10 @@ export async function POST(request: Request) {
           where: { droneId: parseInt(id) },
         });
 
-        if (assigendFarmer && availability === "true") {
+        if (
+          assigendFarmer &&
+          (availability === "AVAILABLE" || availability === "CRASHED")
+        ) {
           await prisma.farmer.update({
             where: { id: assigendFarmer.id },
             data: {
@@ -62,7 +65,7 @@ export async function POST(request: Request) {
             data: {
               serialNumber,
               model,
-              availability: availability === "true" ? "AVAILABLE" : "BUSY",
+              availability: availability,
               image: downloadUrl ? downloadUrl : existDrone.image,
               imgPath: imgPath ? imgPath : existDrone.imgPath,
             },
